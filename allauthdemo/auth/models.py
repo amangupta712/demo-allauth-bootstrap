@@ -8,11 +8,9 @@ from django.utils import timezone
 from six import python_2_unicode_compatible
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import RegexValidator
 
-try:
-    from django.utils.encoding import force_text
-except ImportError:
-    from django.utils.encoding import force_unicode as force_text
+from django.utils.encoding import force_text
 from allauth.account.signals import user_signed_up
 
 
@@ -50,6 +48,18 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     Remember to change ``AUTH_USER_MODEL`` in ``settings.py``.
     """
+    NONE = ''
+    CHESS = 'CH'
+    RUBIK = 'RU'
+    VEDIC = 'VE'
+    SUBJECT_CHOICES = [
+        (NONE, 'choose a subject'),
+        (CHESS, 'Chess'),
+        (RUBIK, 'Rubik\'s Cube'),
+        (VEDIC, 'Vedic Maths')
+    ]
+
+    CALENDER_LENGTH = 24 * 7
 
     email = models.EmailField(_('email address'), blank=False, unique=True)
     first_name = models.CharField(_('first name'), max_length=40, blank=True, null=True, unique=False)
@@ -62,6 +72,12 @@ class User(AbstractBaseUser, PermissionsMixin):
                                                 'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,12}$', message="1. Format: '+99999....'. "
+                                                                   "2. Should be 9 to 12 digits")
+    phone = models.CharField(_('phone'), validators=[phone_regex], max_length=17, null=True)
+    # validators should be a list
+    subject = models.CharField(_('subject'), max_length=2, choices=SUBJECT_CHOICES, default=NONE)
+    calender = models.CharField(_('calender'), max_length=CALENDER_LENGTH, null=True)
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -140,8 +156,6 @@ class UserProfile(models.Model):
     #    "current" avatar as a foreign key in User or UserProfile.
     avatar_url = models.CharField(max_length=256, blank=True, null=True)
 
-    dob = models.DateField(verbose_name="dob", blank=True, null=True)
-
     def __str__(self):
         return force_text(self.user.email)
 
@@ -174,6 +188,13 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
 
     if sociallogin:
         # Extract first / last names from social nets and store on User record
+
+        if sociallogin.account.provider == 'google':
+            user.first_name = sociallogin.account.extra_data['given_name']
+            user.last_name = sociallogin.account.extra_data['family_name']
+            # verified = sociallogin.account.extra_data['verified_email']
+            picture_url = sociallogin.account.extra_data['picture']
+
         if sociallogin.account.provider == 'twitter':
             name = sociallogin.account.extra_data['name']
             user.first_name = name.split()[0]
@@ -185,12 +206,6 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
             # verified = sociallogin.account.extra_data['verified']
             picture_url = "http://graph.facebook.com/{0}/picture?width={1}&height={1}".format(
                 sociallogin.account.uid, preferred_avatar_size_pixels)
-
-        if sociallogin.account.provider == 'google':
-            user.first_name = sociallogin.account.extra_data['given_name']
-            user.last_name = sociallogin.account.extra_data['family_name']
-            # verified = sociallogin.account.extra_data['verified_email']
-            picture_url = sociallogin.account.extra_data['picture']
 
     profile = UserProfile(user=user, avatar_url=picture_url)
     profile.save()

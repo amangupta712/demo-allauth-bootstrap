@@ -10,21 +10,18 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 from os.path import dirname, join
 
-
 BASE_DIR = dirname(dirname(__file__))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '{{ secret_key }}'
+SECRET_KEY = 'cj%ye(3&amp;w4i#5lhoa&amp;yte@$cdrtml6+g-$otn%p%&amp;c$5^o410n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 INSTALLED_APPS = (
@@ -36,14 +33,15 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'bootstrap4', # optional module for making bootstrap forms easier
+    'bootstrap4',  # optional module for making bootstrap forms easier
 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  # enabled by configure
+    'allauth.socialaccount.providers.google',
     'allauthdemo.auth',
-    'allauthdemo.demo',
+
+    'phonenumber_field',
 )
 
 MIDDLEWARE = [
@@ -59,7 +57,6 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'allauthdemo.urls'
 
 WSGI_APPLICATION = 'allauthdemo.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -84,7 +81,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -98,37 +94,37 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [
     {
-    #'TEMPLATE_DEBUG': True,
-    'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [
-        # allauth templates: you could copy this directory into your
-        # project and tweak it according to your needs
-        # join(PROJECT_ROOT, 'templates', 'uniform', 'allauth'),
-        # example project specific templates
-        join(BASE_DIR, 'allauthdemo', 'templates', 'plain', 'example'),
-        #join(BASE_DIR, 'allauthdemo', 'templates', 'bootstrap', 'allauth'),
-        join(BASE_DIR, 'allauthdemo', 'templates', 'allauth'),
-        join(BASE_DIR, 'allauthdemo', 'templates'),
-    ],
-    'APP_DIRS': True,
-    'OPTIONS': {
-        'context_processors': [
-            # needed for admin templates
-            'django.contrib.auth.context_processors.auth',
-            # these *may* not be needed
-            'django.template.context_processors.debug',
-            'django.template.context_processors.i18n',
-            'django.template.context_processors.media',
-            'django.template.context_processors.static',
-            'django.template.context_processors.tz',
-            'django.contrib.messages.context_processors.messages',
-            # allauth needs this from django
-            'django.template.context_processors.request',
-            # allauth specific context processors
-            #'allauth.account.context_processors.account',
-            #'allauth.socialaccount.context_processors.socialaccount',
-          ],
-       },
+        # 'TEMPLATE_DEBUG': True,
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # allauth templates: you could copy this directory into your
+            # project and tweak it according to your needs
+            # join(PROJECT_ROOT, 'templates', 'uniform', 'allauth'),
+            # example project specific templates
+            join(BASE_DIR, 'allauthdemo', 'templates', 'plain', 'example'),
+            # join(BASE_DIR, 'allauthdemo', 'templates', 'bootstrap', 'allauth'),
+            join(BASE_DIR, 'allauthdemo', 'templates', 'allauth'),
+            join(BASE_DIR, 'allauthdemo', 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # needed for admin templates
+                'django.contrib.auth.context_processors.auth',
+                # these *may* not be needed
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                # allauth needs this from django
+                'django.template.context_processors.request',
+                # allauth specific context processors
+                # 'allauth.account.context_processors.account',
+                # 'allauth.socialaccount.context_processors.socialaccount',
+            ],
+        },
     }
 ]
 
@@ -149,17 +145,15 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
 # ACCOUNT_EMAIL_VERIFICATION = 'none'  # testing...
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-SOCIALACCOUNT_AUTO_SIGNUP = False  # require social accounts to use the signup form ... I think
+SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_FORMS = {'signup': 'allauthdemo.auth.forms.MyCustomSocialSignupForm'}
 # For custom sign-up form:
 # http://stackoverflow.com/questions/12303478/how-to-customize-user-profile-when-using-django-allauth
 SOCIALACCOUNT_PROVIDERS = {
-    'facebook': {
-        'SCOPE': ['email'],  #, 'publish_stream'],
-        'METHOD': 'oauth2'  # 'js_sdk'  # instead of 'oauth2'
-    },
     'google':
-        { 'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': { 'access_type': 'online' }
-    },
+        {'SCOPE': ['profile', 'email'],
+         'AUTH_PARAMS': {'access_type': 'online'}},
 }
 
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'IN'

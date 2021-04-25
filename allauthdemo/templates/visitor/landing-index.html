@@ -2,21 +2,18 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container">
   <div class="jumbotron text-center">
-    <h1>This = Django-Allauth <br>+ Bootstrap</h1>
-    <p class="lead">
-      Read more on the <a href="{% url 'landing_about' %}">About Page.</a>
-    </p>
+<!--
+    <a href="{% url 'account_signup' %}"><img src="../static/imgs/google_logo.svg" alt="Sign Up with Google" width="52px" role="button"> Sign Up with Google</a>
+    or
+    <a href="{% url 'account_login' %}"><img src="../static/imgs/google-sign-in.svg" alt="Login with Google" width="275px" role="button"></a>
+    -->
     <p>
-      <a class="btn btn-lg btn-success " href="{% url 'account_signup' %}" role="button">Join</a>
-      or
+      <a class="btn btn-lg btn-success " href="{% url 'account_signup' %}" role="button">Sign Up</a>
+      &ensp; or &ensp;
       <a class="btn btn-lg btn-success " href="{% url 'account_login' %}" role="button">Log In</a>
     </p>
   </div>
 </div>
-
 {% endblock %}
-
-

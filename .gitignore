@@ -4,6 +4,7 @@
 *.db
 *.sqlite3
 */settings_*.py
+/allauthdemo/auth/migrations/*
 *.iml
 .idea
 DEL

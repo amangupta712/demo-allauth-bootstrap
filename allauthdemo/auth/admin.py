@@ -1,14 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-# from django.utils.html import format_html_join
-# from django.utils.safestring import mark_safe
-# from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
-try:
-    from django.utils.encoding import force_text
-except ImportError:
-    from django.utils.encoding import force_unicode as force_text
 
 from .models import User, UserProfile
 from .forms import UserAdminForm
@@ -45,18 +38,17 @@ class UserAdmin(DjangoUserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'display_name')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-        'groups', 'user_permissions')}),
+        (_('Personal info'), {'fields': ('phone', 'subject')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        # (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+        #                                'groups', 'user_permissions')}),
         # (_('Ids'), {'fields': ('private_uuid', 'public_id')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}
-        ),
+            'fields': ('email', 'password1', 'password2')}),
     )
     list_display = ('email', 'first_name', 'last_name', 'display_name', 'is_staff')
     search_fields = ('first_name', 'last_name', 'display_name', 'email')
