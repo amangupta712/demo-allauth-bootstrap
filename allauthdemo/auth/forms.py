@@ -1,16 +1,6 @@
 from django import forms
 from allauth.socialaccount.forms import SignupForm
-# from django.utils.translation import ugettext_lazy as _
-
 from .models import User
-
-
-#
-# SubjectChoices(models.IntegerChoices):
-#     NONE = None, 'Choose a Subject ...'
-#     CHESS = 1, 'Chess'
-#     RUBIK_CUBE = 2, 'Rubik\'s Cube'
-#     VEDIC_MATH = 3, 'Vedic Maths'
 
 
 class MyCustomSocialSignupForm(SignupForm):
@@ -18,12 +8,18 @@ class MyCustomSocialSignupForm(SignupForm):
     phone_form_field = forms.RegexField(required=True, regex=r'^\+?1?\d{9,12}$',
                                         error_messages={"invalid": "Please enter a valid phone number"})
 
+    start_time = forms.ChoiceField(choices=[(x, x) for x in range(0, 24)])
+    end_time = forms.ChoiceField(choices=[(x, x) for x in range(0, 24)])
+
     def save(self, request):
         # Ensure you call the parent class's save.
         # .save() returns a User object.
         user = super(MyCustomSocialSignupForm, self).save(request)
         user.phone = self.cleaned_data['phone_form_field']
         user.subject = self.cleaned_data['subject_form_field']
+        start_time_int = int(self.cleaned_data['start_time'])
+        end_time_int = int(self.cleaned_data['end_time'])
+        user.fill_calender(start_time_int, end_time_int)
         user.save()
         # Add your own processing here.
         # You must return the original result.

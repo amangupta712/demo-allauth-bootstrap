@@ -6,7 +6,6 @@
 <div class="container">
     <h1>Profile</h1>
     <div class="row">
-        {% bootstrap_messages fix this%}
         <div class="col-md-6 col-lg-6">
             <form action="{% url 'account_profile' %}" method="post" class="form">
                 {% csrf_token %}
@@ -16,7 +15,6 @@
                 {% endbuttons %}
             </form>
         </div>
-
         <div class="col-md-6 col-lg-6">
             TODO: DOB, picture
         </div>

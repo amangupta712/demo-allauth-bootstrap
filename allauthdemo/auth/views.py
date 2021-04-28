@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from allauth.socialaccount.views import SignupView
 from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView  # ,FormMixin
+from django.views.generic.edit import UpdateView
 
 from .forms import UserEditForm
 from .forms import MyCustomSocialSignupForm

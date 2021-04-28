@@ -72,8 +72,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                                                 'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,12}$', message="1. Format: '+99999....'. "
-                                                                   "2. Should be 9 to 12 digits")
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,12}$', message="a) Format: '+99999....    '."
+                                                                   "b) Length: 9 - 12 digits")
     phone = models.CharField(_('phone'), validators=[phone_regex], max_length=17, null=True)
     # validators should be a list
     subject = models.CharField(_('subject'), max_length=2, choices=SUBJECT_CHOICES, default=NONE)
@@ -88,6 +88,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
         db_table = 'auth_user'
         abstract = False
+
+    def fill_calender(self, start, end):
+        out = ''
+        if self.calender:
+            new = [0] * self.CALENDER_LENGTH
+            out = ''.join(map(str, new))
+        for i in range(start, end):
+            out[i] = '1'
 
     def get_absolute_url(self):
         # TODO: what is this for?
@@ -134,7 +142,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def natural_key(self):
-        return (self.email,)
+        return self.email,
 
 
 @python_2_unicode_compatible
